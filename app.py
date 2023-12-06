@@ -23,4 +23,7 @@ def list_users():
     """List users and show add form."""
 
     users = Users.query.all()
-    return render_template("list.html", users=users)
+    return redirect("/users")
+
+@app.get("/users")
+def show_all_user():
