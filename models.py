@@ -29,5 +29,5 @@ class Users(db.Model):
         db.String(50),
         nullable=False)
 
-    last_name = db.Column(
+    image_url = db.Column(
         db.String(100))

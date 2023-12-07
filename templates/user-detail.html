@@ -1,17 +1,21 @@
 {% extends  base.html %}
 
-{ % block content % }
+{% block title %}
+User Detail
+{% endblock title %}
+
+{% block content %}
 
 <h1>{{% user.name %}}</h1>
 
-<img src="{{% user.image_url %}}" alt="">
+<img src="{{ user.image_url }}" alt="">
 
-<form action="/users/{{% user.id %}}/edit" method="GET">
+<form action="/users/{{ user.id }}/edit" method="GET">
   <button>Edit</button>
 </form>
 
-<form action="/users/{{% user.id %}}/delete" method="POST">
+<form action="/users/{{ user.id }}/delete" method="POST">
   <button>Delete</button>
 </form>
 
-{{ % endblock % }}
+{% endblock content %}
