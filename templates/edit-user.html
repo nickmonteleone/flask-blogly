@@ -1,4 +1,4 @@
-{% extends base.html %}
+{% extends 'base.html' %}
 
 {% block title %}
 Edit User
@@ -15,7 +15,8 @@ Edit User
   <input name="last_name" value="{{ user.last_name }}">
   <label for="image_url">Image URL</label>
   <input name="image_url" placeholder="{{ user.image_url }}">
-  <button>Add</button>
+  <button>Cancel</button>
+  <button>Save</button>
 </form>
 
 {% endblock content %}

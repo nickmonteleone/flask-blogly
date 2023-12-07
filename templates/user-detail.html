@@ -1,4 +1,4 @@
-{% extends  base.html %}
+{% extends  'base.html' %}
 
 {% block title %}
 User Detail
@@ -6,7 +6,7 @@ User Detail
 
 {% block content %}
 
-<h1>{{% user.name %}}</h1>
+<h1>{{ user.first_name }} {{ user.last_name}}</h1>
 
 <img src="{{ user.image_url }}" alt="">
 
