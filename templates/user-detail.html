@@ -8,7 +8,9 @@ User Detail
 
 <h1>{{ user.first_name }} {{ user.last_name}}</h1>
 
-<img src="{{ user.image_url }}" alt="">
+{% if user.image_url %}
+<img src="{{ user.image_url }}" alt="user image" class="img-thumbnail w-25">
+{% endif %}
 
 <form action="/users/{{ user.id }}/edit" method="GET">
   <button>Edit</button>

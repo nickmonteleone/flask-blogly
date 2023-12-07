@@ -37,12 +37,28 @@ def show_all_users():
     )
 
 @app.get("/users/new")
-def show_add_form():
+def show_new_user_form():
     """Show an add form for users"""
 
     return render_template(
         'new-user-form.html'
     )
+
+@app.post("/users/new")
+def submit_new_user_form():
+    """Submit an add form for users"""
+
+    new_user = Users(
+        first_name=request.form['first_name'],
+        last_name=request.form['last_name'],
+        image_url=request.form['image_url']
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect("/users")
+
 
 @app.get("/users/<int:user_id>")
 def show_user_id_information(user_id):
@@ -53,10 +69,24 @@ def show_user_id_information(user_id):
     return render_template('user-detail.html', user=user)
 
 @app.get("/users/<int:user_id>/edit")
-def show_edit_page(user_id):
+def show_edit_user_form(user_id):
     """Show the edit page for a user"""
 
     user = Users.query.get_or_404(user_id)
 
     return render_template('edit-user.html', user=user)
+
+@app.post("/users/<int:user_id>/edit")
+def submit_edit_user_form(user_id):
+    """Show the edit page for a user"""
+
+    user = Users.query.get_or_404(user_id)
+    user.first_name = request.form['first_name']
+    user.last_name = request.form['last_name']
+    user.image_url = request.form['image_url']
+
+    db.session.add(user)
+    db.session.commit()
+
+    return redirect(f"/users/{user_id}")
 
