@@ -30,6 +30,6 @@ class User(db.Model):
     last_name = db.Column(
         db.String(50),
         nullable=False)
-
+    # TODO: for adding default, need to have nullable false
     image_url = db.Column(
         db.String(100))

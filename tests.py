@@ -22,7 +22,7 @@ app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 db.drop_all()
 db.create_all()
 
-
+# TODO: new file/class for posts test case, or separate for views/models
 class UserViewTestCase(TestCase):
     """Test views for users."""
 
@@ -104,6 +104,7 @@ class UserViewTestCase(TestCase):
 
             self.assertIn(self.user_1_first_name, html)
             self.assertIn(self.user_1_last_name, html)
+            # TODO: change if add default value for image
             self.assertNotIn("<img", html)
 
 
@@ -127,6 +128,7 @@ class UserViewTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('<!-- Test: edit-user.html', html)
+            # TODO: check that user data is filled in for edit form
 
     def test_submit_user_edit(self):
         """User should be able to edit name and img url"""
@@ -198,3 +200,5 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Invalid first name.', html)
             self.assertIn('Invalid last name.', html)
+
+        # TODO: add test for verifying that going to nonexistant user goes to 404

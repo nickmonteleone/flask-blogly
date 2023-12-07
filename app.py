@@ -20,14 +20,19 @@ app.config['SECRET_KEY'] = "SECRET!"
 debug = DebugToolbarExtension(app)
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
+# TODO: separate folders for users / posts html. comments to delim
+
 @app.get("/")
+# TODO: rename function to index
 def list_users():
+    # TODO: add redirect comment to docstring
     """Initial landing page"""
 
     return redirect("/users")
 
 @app.get("/users")
 def show_all_users():
+    # TODO: remove comment for showing button
     """List users and show button to add user"""
 
     users = User.query.all()
@@ -96,13 +101,14 @@ def submit_edit_user_form(user_id):
     user = User.query.get_or_404(user_id)
     user.first_name = request.form['first_name']
     user.last_name = request.form['last_name']
+    # TODO: handle for case of what happens in case of empty string
     user.image_url = request.form['image_url']
 
     db.session.add(user)
     db.session.commit()
 
     return redirect(f"/users/{user_id}")
-
+# TODO: flash message for delete/add/edit user status on home page on redirect
 @app.post("/users/<int:user_id>/delete")
 def delete_user(user_id):
     """Delete the user"""
