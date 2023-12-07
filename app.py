@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, User
@@ -53,6 +53,19 @@ def submit_new_user_form():
         last_name=request.form['last_name'],
         image_url=request.form['image_url']
     )
+
+    name_check = True
+
+    if len(new_user.first_name.strip()) == 0:
+        flash(f"Invalid first name.")
+        name_check = False
+
+    if len(new_user.last_name.strip()) == 0:
+        flash(f"Invalid last name.")
+        name_check = False
+
+    if not name_check:
+        return redirect('/users')
 
     db.session.add(new_user)
     db.session.commit()

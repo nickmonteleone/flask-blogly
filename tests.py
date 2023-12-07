@@ -171,3 +171,22 @@ class UserViewTestCase(TestCase):
 
             self.assertIn(new_first_name, html)
             self.assertIn(new_last_name, html)
+
+        new_first_empty = ''
+        new_last_empty = ''
+        new_img_url = ''
+
+        with app.test_client() as c:
+            resp = c.post(
+                f"/users/new",
+                data={
+                    'first_name': new_first_empty,
+                    'last_name': new_last_empty,
+                    'image_url': new_img_url
+                },
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Invalid first name.', html)
+            self.assertIn('Invalid last name.', html)
