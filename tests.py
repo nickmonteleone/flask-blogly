@@ -5,7 +5,9 @@ os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 from unittest import TestCase
 
 from app import app, db
-from models import DEFAULT_IMAGE_URL, User
+from models import  User
+# from models import  DEFAULT_IMAGE_URL
+
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -93,6 +95,7 @@ class UserViewTestCase(TestCase):
         """Should show user details"""
 
         with app.test_client() as c:
+
             resp = c.get(f"/users/{self.user_1_id}")
             html = resp.get_data(as_text=True)
 
@@ -102,6 +105,7 @@ class UserViewTestCase(TestCase):
             self.assertIn(self.user_1_first_name, html)
             self.assertIn(self.user_1_last_name, html)
             self.assertNotIn("<img", html)
+
 
             resp = c.get(f"/users/{self.user_2_id}")
             html = resp.get_data(as_text=True)
@@ -117,6 +121,7 @@ class UserViewTestCase(TestCase):
         '''User edit form should show'''
 
         with app.test_client() as c:
+
             resp = c.get(f"/users/{self.user_1_id}/edit")
             html = resp.get_data(as_text=True)
 
@@ -131,6 +136,7 @@ class UserViewTestCase(TestCase):
         edited_img_url = "https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg"
 
         with app.test_client() as c:
+
             resp = c.post(
                 f"/users/{self.user_1_id}/edit",
                 data={
@@ -149,15 +155,17 @@ class UserViewTestCase(TestCase):
             self.assertIn(edited_img_url, html)
 
     def test_submit_new_user(self):
-        """Should be able to create user and redirect to user listings"""
+        """Should be able to create user and redirect to user listings
+        empty entry for name should not be allowed"""
 
         new_first_name = 'new first name'
         new_last_name = 'new last name'
         new_img_url = "https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg"
 
         with app.test_client() as c:
+
             resp = c.post(
-                f"/users/new",
+                "/users/new",
                 data={
                     'first_name': new_first_name,
                     'last_name': new_last_name,
@@ -172,13 +180,13 @@ class UserViewTestCase(TestCase):
             self.assertIn(new_first_name, html)
             self.assertIn(new_last_name, html)
 
-        new_first_empty = ''
-        new_last_empty = ''
-        new_img_url = ''
+            new_first_empty = '      '
+            new_last_empty = ''
+            new_img_url = ''
 
-        with app.test_client() as c:
+
             resp = c.post(
-                f"/users/new",
+                "/users/new",
                 data={
                     'first_name': new_first_empty,
                     'last_name': new_last_empty,
