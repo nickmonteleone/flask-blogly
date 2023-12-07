@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Post
+{% endblock title %}
+
+{% block content %}
+
+<!-- Test: edit-post.html loaded; FOR TESTING DO NOT REMOVE -->
+
+<h1>Edit Post</h1>
+
+<form action="/posts/{{ post.id }}/edit" method="POST" class="d-flex flex-column align-items-start">
+  <label for="title">Title</label>
+  <input name="title" value="{{ post.title }}">
+  <label for="content">Post Content</label>
+  <input name="content" value="{{ post.content }}">
+  <button>Edit</button>
+</form>
+
+<form action="/posts/{{ post.id }}">
+  <button>Cancel</button>
+</form>
+
+
+{% endblock content %}

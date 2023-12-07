@@ -172,3 +172,54 @@ def show_post_page(post_id):
         '/post/post-detail.html',
         post=post
     )
+
+@app.get('/posts/<int:post_id>/edit')
+def show_edit_post_form(post_id):
+    """Show edit post form"""
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('/post/edit-post.html', post=post)
+
+
+@app.post('/posts/<int:post_id>/edit')
+def submit_edit_post_form(post_id):
+    """Submits edit for post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    post.title = request.form['title']
+    post.content = request.form['content']
+
+    input_check = True
+
+    if len(post.title.strip()) == 0:
+        flash(f"Invalid edit for post title.")
+        input_check = False
+
+    if len(post.content.strip()) == 0:
+        flash(f"Invalid edit for post content.")
+        input_check = False
+
+    if input_check:
+        db.session.add(post)
+        db.session.commit()
+        flash('Post edited successfully!')
+
+    return redirect(f'/posts/{post_id}')
+
+
+@app.post("/posts/<int:post_id>/delete")
+def delete_post(post_id):
+    """Delete post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    user_id = post.user.id
+
+    db.session.delete(post)
+    db.session.commit()
+
+    flash('Post deleted successfully!')
+
+    return redirect(f'/users/{user_id}')
