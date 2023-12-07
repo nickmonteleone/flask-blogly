@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import db, connect_db, User
+from models import db, connect_db, Post, User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -20,7 +20,6 @@ app.config['SECRET_KEY'] = "SECRET!"
 debug = DebugToolbarExtension(app)
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
-# TODO: separate folders for users / posts html. comments to delim
 
 @app.get("/")
 # TODO: rename function to index
@@ -29,6 +28,9 @@ def list_users():
     """Initial landing page"""
 
     return redirect("/users")
+
+##########################################################
+# routes for users
 
 @app.get("/users")
 def show_all_users():
@@ -69,11 +71,9 @@ def submit_new_user_form():
         flash(f"Invalid last name.")
         name_check = False
 
-    if not name_check:
-        return redirect('/users')
-
-    db.session.add(new_user)
-    db.session.commit()
+    if name_check:
+        db.session.add(new_user)
+        db.session.commit()
 
     return redirect("/users")
 
@@ -119,3 +119,56 @@ def delete_user(user_id):
     db.session.commit()
 
     return redirect('/users')
+
+
+##########################################################
+# routes for posts
+
+@app.get('/users/<int:user_id>/posts/new')
+def show_new_post_form(user_id):
+    '''Show page with form to add a new post'''
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template(
+        '/post/new-post-form.html',
+        user=user
+    )
+
+@app.post('/users/<int:user_id>/posts/new')
+def submit_new_post_form(user_id):
+    '''Submit form to create a new post'''
+
+    new_post = Post(
+        title=request.form['title'],
+        content=request.form['content'],
+        user_id=user_id
+    )
+
+    input_check = True
+
+    if len(new_post.title.strip()) == 0:
+        flash(f"Invalid title for post addition.")
+        input_check = False
+
+    if len(new_post.content.strip()) == 0:
+        flash(f"Invalid content for post addition.")
+        input_check = False
+
+    if input_check:
+        db.session.add(new_post)
+        db.session.commit()
+        flash('Post added successfully!')
+
+    return redirect(f'/users/{user_id}')
+
+@app.get('/posts/<int:post_id>')
+def show_post_page(post_id):
+    '''Show the post page for a particular post'''
+
+    post = Post.query.get_or_404(post_id)
+
+    return render_template(
+        '/post/post-detail.html',
+        post=post
+    )

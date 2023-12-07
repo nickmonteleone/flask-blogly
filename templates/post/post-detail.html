@@ -1,0 +1,37 @@
+{% extends  'base.html' %}
+
+{% block title %}
+Post Detail
+{% endblock title %}
+
+{% block content %}
+
+<!-- Test: post-detail.html loaded; FOR TESTING DO NOT REMOVE -->
+
+<div>
+  {% for msg in get_flashed_messages() %}
+  <p>{{ msg }}</p>
+  {% endfor %}
+</div>
+
+<h1>{{ post.title }}</h1>
+
+<p>{{ post.content }}</p>
+
+<p>by {{ post.user.first_name }} {{ post.user.last_name }}</p>
+
+
+
+<form action="/posts/{{ post.id }}/edit" method="GET">
+  <button>Edit</button>
+</form>
+
+<form action="/posts/{{ post.id }}/delete" method="POST">
+  <button>Delete</button>
+</form>
+
+<form action="/users/{{ post.user.id }}">
+  <button>Cancel</button>
+</form>
+
+{% endblock content %}

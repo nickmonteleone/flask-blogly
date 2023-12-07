@@ -8,6 +8,12 @@ User Detail
 
 <!-- Test: user-detail.html loaded; FOR TESTING DO NOT REMOVE -->
 
+<div>
+  {% for msg in get_flashed_messages() %}
+  <p>{{ msg }}</p>
+  {% endfor %}
+</div>
+
 <h1>{{ user.first_name }} {{ user.last_name}}</h1>
 
 {% if user.image_url %}
@@ -26,7 +32,9 @@ User Detail
 
 <ul>
   {% for post in user.posts %}
-  <li><a href="[user link for specific post]"></a>{{post.title}}</li>
+  <form action="/posts/{{ post.id }}">
+    <button>{{ post.title }}</button>
+  </form>
   {% endfor %}
 </ul>
 
