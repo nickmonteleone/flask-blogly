@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+DEFAULT_IMAGE_URL = 'https://upload.wikimedia.org/wikipedia/commons/d/d9/Collage_of_Nine_Dogs.jpg'
+
 def connect_db(app):
     """Connect to database."""
 
@@ -11,7 +13,7 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
-class Users(db.Model):
+class User(db.Model):
     """Users table."""
 
     __tablename__ = "users"

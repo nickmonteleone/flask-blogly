@@ -38,7 +38,14 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
+        dog_user = User(
+            first_name="Max",
+            last_name="Doggo",
+            image_url='https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg',
+        )
+
         db.session.add(test_user)
+        db.session.add(dog_user)
         db.session.commit()
 
         # We can hold onto our test_user's id by attaching it to self (which is
@@ -46,6 +53,7 @@ class UserViewTestCase(TestCase):
         # rely on this user in our tests without needing to know the numeric
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
+        self.user_id2 = dog_user.id
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -58,3 +66,24 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
+
+    def test_show_new_user_form(self):
+        with app.test_client() as c:
+            resp = c.get("/users/new")
+            html = resp.get_data(as_text=True)
+            self.assertIn('<!-- Test: new-user-form.html', html)
+
+    def test_show_user_id_information(self):
+        with app.test_client() as c:
+            resp = c.get(f"/users/{self.user_id}")
+            html = resp.get_data(as_text=True)
+            self.assertIn("test1_first", html)
+            self.assertIn("test1_last", html)
+            self.assertNotIn("<img", html)
+
+            resp = c.get(f"/users/{self.user_id2}")
+            html = resp.get_data(as_text=True)
+            self.assertIn("Max", html)
+            self.assertIn("Doggo", html)
+            self.assertIn("https://i.ytimg", html)
+
