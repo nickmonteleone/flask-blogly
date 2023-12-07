@@ -37,7 +37,7 @@ def show_all_users():
 
     users = User.query.all()
     return render_template(
-        'user-listing.html',
+        '/user/user-listing.html',
         users=users
     )
 
@@ -46,7 +46,7 @@ def show_new_user_form():
     """Show an add form for users"""
 
     return render_template(
-        'new-user-form.html'
+        '/user/new-user-form.html'
     )
 
 @app.post("/users/new")
@@ -84,7 +84,7 @@ def show_user_id_information(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    return render_template('user-detail.html', user=user)
+    return render_template('/user/user-detail.html', user=user)
 
 @app.get("/users/<int:user_id>/edit")
 def show_edit_user_form(user_id):
@@ -92,7 +92,7 @@ def show_edit_user_form(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    return render_template('edit-user.html', user=user)
+    return render_template('/user/edit-user.html', user=user)
 
 @app.post("/users/<int:user_id>/edit")
 def submit_edit_user_form(user_id):

@@ -33,3 +33,36 @@ class User(db.Model):
     # TODO: for adding default, need to have nullable false
     image_url = db.Column(
         db.String(100))
+
+    posts = db.relationship("Post", backref='user')
+
+
+class Post(db.Model):
+    """Posts table"""
+
+    __tablename__ = "posts"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+
+    title = db.Column(
+        db.String(50),
+        nullable=False)
+
+    content = db.Column(
+        db.Text,
+        nullable=False)
+
+    created_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=db.func.now()
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
