@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Tag
+{% endblock title %}
+
+{% block content %}
+
+<!-- Test: edit-form.html loaded; FOR TESTING DO NOT REMOVE -->
+
+<h1>Edit Tag</h1>
+
+<form action="/tags/{{ tag.id }}" method="POST" class="d-flex flex-column align-items-start">
+  <label for="name">Title</label>
+  <input name="name" value="{{ tag.name }}">
+  <button>Edit</button>
+</form>
+
+<form action="/tags">
+  <button>Cancel</button>
+</form>
+
+
+{% endblock content %}

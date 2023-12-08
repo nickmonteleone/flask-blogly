@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import db, connect_db, Post, User
+from models import db, connect_db, Post, Tag, User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -84,7 +84,6 @@ def show_user_id_information(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('/user/detail.html', user=user)
-    # TODO: in files, have user files starts w/ "user"
 
 
 @app.get("/users/<int:user_id>/edit")
@@ -243,3 +242,68 @@ def delete_post(post_id):
     flash('Post deleted successfully!')
 
     return redirect(f'/users/{user_id}')
+
+
+#################################################################
+# routes for tags
+
+@app.get("/tags")
+def show_all_tags():
+    """List tags on page"""
+
+    tags = Tag.query.all()
+    return render_template(
+        '/tag/listing.html',
+        tags=tags
+    )
+
+@app.get("/tags/new")
+def show_new_tag_form():
+    """Show an add form for tags"""
+
+    return render_template(
+        '/tag/new-form.html'
+    )
+
+@app.post("/tags/new")
+def submit_new_tag_form():
+    """Submit an add form for users"""
+
+    new_tag = Tag(
+        name=request.form['name'],
+    )
+
+    if len(new_tag.name.strip()) != 0:
+        db.session.add(new_tag)
+        db.session.commit()
+        flash('Tag successfully added!')
+    else:
+        flash('Invalid tag input.')
+
+
+    return redirect("/tags")
+
+@app.get('/tags/<int:tag_id>')
+def show_edit_tag_form(tag_id):
+    """Show edit tag form"""
+
+    tag = Tag.query.get_or_404(tag_id)
+
+    return render_template('/tag/edit-form.html', tag=tag)
+
+
+@app.post('/tags/<int:tag_id>')
+def submit_edit_tag_form(tag_id):
+    """Submits edit for post"""
+
+    tag = Tag.query.get_or_404(tag_id)
+
+    tag.name = request.form['name']
+
+
+    if len(tag.name.strip()) != 0:
+        db.session.add(tag)
+        db.session.commit()
+        flash('Tag edited successfully!')
+
+    return redirect(f'/tags')

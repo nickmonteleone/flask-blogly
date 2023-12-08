@@ -21,20 +21,23 @@ class User(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
-        autoincrement=True)
+        autoincrement=True,
+    )
 
     first_name = db.Column(
         db.String(50),
-        nullable=False)
+        nullable=False,
+    )
 
     last_name = db.Column(
         db.String(50),
-        nullable=False)
-    # TODO: for adding default, need to have nullable false
+        nullable=False,
+    )
+
     image_url = db.Column(
-        db.String(100))
-    # TODO: URLs can be long, make it 500
-    # TODO: make image_url nullable=False
+        db.String(500),
+        nullable=False,
+    )
 
     posts = db.relationship("Post", backref='user')
 
@@ -47,27 +50,65 @@ class Post(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
-        autoincrement=True)
+        autoincrement=True,
+    )
 
     title = db.Column(
         db.String(50),
-        nullable=False)
+        nullable=False,
+    )
 
     content = db.Column(
         db.Text,
-        nullable=False)
+        nullable=False,
+    )
 
     created_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=db.func.now()
+        default=db.func.now(),
     )
-    # TODO: make closing paragraphs consistent
 
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id"),
         nullable=False,
-    # TODO: having a trailing comma at last parameter is good
     )
-    # TODO: make closing paragraphs consistent
+
+
+class Tag(db.Model):
+    """Tags  table """
+
+    __tablename__ = "tags"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    name = db.Column(
+        db.String(20),
+        unique=True,
+        nullable=False,
+    )
+
+    posts = db.relationship(
+        'Post', secondary='post_tags', backref='tags')
+
+class PostTag(db.Model):
+    """Tags  table """
+
+    __tablename__ = "post_tags"
+
+    post_id = db.Column(
+        db.Integer,
+        db.ForeignKey('posts.id'),
+        primary_key=True,
+    )
+
+    tag_id = db.Column(
+        db.Integer,
+        db.ForeignKey('tags.id'),
+        primary_key=True,
+    )

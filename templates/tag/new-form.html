@@ -1,0 +1,23 @@
+{% extends  'base.html' %}
+
+{% block title %}
+New User Form
+{% endblock title %}
+
+{% block content %}
+
+<!-- Test: new-form.html loaded; FOR TESTING DO NOT REMOVE -->
+
+<h1>Create a tag</h1>
+
+<form action="/tags/new" method="POST" class="d-flex flex-column align-items-start">
+  <label for="name">Name</label>
+  <input name="name" placeholder="Enter a tag name">
+  <button>Add</button>
+</form>
+
+<form action="/tags">
+  <button>Cancel</button>
+</form>
+
+{% endblock content %}
