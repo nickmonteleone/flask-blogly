@@ -20,5 +20,8 @@ Edit Tag
   <button>Cancel</button>
 </form>
 
+<form action="/tags/{{ tag.id }}/delete" method="POST">
+  <button>Delete</button>
+</form>
 
 {% endblock content %}

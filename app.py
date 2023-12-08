@@ -20,6 +20,8 @@ app.config['SECRET_KEY'] = "SECRET!"
 debug = DebugToolbarExtension(app)
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
+print('This is db.create_all()')
+print(db.create_all())
 
 @app.get("/")
 def index():
@@ -305,5 +307,19 @@ def submit_edit_tag_form(tag_id):
         db.session.add(tag)
         db.session.commit()
         flash('Tag edited successfully!')
+
+    return redirect(f'/tags')
+
+
+@app.post('/tags/<int:tag_id>/delete')
+def delete_tag(tag_id):
+    """Delete post"""
+
+    tag = Tag.query.get_or_404(tag_id)
+
+    db.session.delete(tag)
+    db.session.commit()
+
+    flash('Tag deleted successfully!')
 
     return redirect(f'/tags')
