@@ -22,10 +22,8 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
 @app.get("/")
-# TODO: rename function to index
-def list_users():
-    # TODO: add redirect comment to docstring
-    """Initial landing page"""
+def index():
+    """Initial landing page, redirect to user listing page"""
 
     return redirect("/users")
 
@@ -34,8 +32,7 @@ def list_users():
 
 @app.get("/users")
 def show_all_users():
-    # TODO: remove comment for showing button
-    """List users and show button to add user"""
+    """List users on page"""
 
     users = User.query.all()
     return render_template(
@@ -64,16 +61,18 @@ def submit_new_user_form():
     name_check = True
 
     if len(new_user.first_name.strip()) == 0:
-        flash(f"Invalid first name.")
+        flash("Invalid first name.")
         name_check = False
 
     if len(new_user.last_name.strip()) == 0:
-        flash(f"Invalid last name.")
+        flash("Invalid last name.")
         name_check = False
 
     if name_check:
         db.session.add(new_user)
         db.session.commit()
+        flash('User successfully added!')
+
 
     return redirect("/users")
 
@@ -101,14 +100,26 @@ def submit_edit_user_form(user_id):
     user = User.query.get_or_404(user_id)
     user.first_name = request.form['first_name']
     user.last_name = request.form['last_name']
-    # TODO: handle for case of what happens in case of empty string
     user.image_url = request.form['image_url']
 
-    db.session.add(user)
-    db.session.commit()
+    input_check = True
+
+    if len(user.first_name.strip()) == 0:
+        flash(f"Invalid first name.")
+        input_check = False
+
+    if len(user.last_name.strip()) == 0:
+        flash(f"Invalid last name.")
+        input_check = False
+
+    if input_check:
+        db.session.add(user)
+        db.session.commit()
+        flash('User successfully edited!')
+
 
     return redirect(f"/users/{user_id}")
-# TODO: flash message for delete/add/edit user status on home page on redirect
+
 @app.post("/users/<int:user_id>/delete")
 def delete_user(user_id):
     """Delete the user"""
@@ -117,6 +128,8 @@ def delete_user(user_id):
 
     db.session.delete(user)
     db.session.commit()
+
+    flash('User successfully deleted!')
 
     return redirect('/users')
 

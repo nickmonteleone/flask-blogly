@@ -22,8 +22,7 @@ app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
 db.drop_all()
 db.create_all()
 
-# TODO: new file/class for posts test case, or separate for views/models
-class UserViewTestCase(TestCase):
+class UsersTestCase(TestCase):
     """Test views for users."""
 
     def setUp(self):
@@ -104,8 +103,6 @@ class UserViewTestCase(TestCase):
 
             self.assertIn(self.user_1_first_name, html)
             self.assertIn(self.user_1_last_name, html)
-            # TODO: change if add default value for image
-            self.assertNotIn("<img", html)
 
 
             resp = c.get(f"/users/{self.user_2_id}")
@@ -118,6 +115,10 @@ class UserViewTestCase(TestCase):
             self.assertIn(self.user_2_last_name, html)
             self.assertIn(self.user_2_img_url, html)
 
+            resp = c.get("/users/99999999999")
+            self.assertEqual(resp.status_code, 404)
+
+
     def test_show_user_edit(self):
         '''User edit form should show'''
 
@@ -128,7 +129,10 @@ class UserViewTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('<!-- Test: edit-user.html', html)
-            # TODO: check that user data is filled in for edit form
+
+            self.assertIn(self.user_1_first_name, html)
+            self.assertIn(self.user_1_last_name, html)
+
 
     def test_submit_user_edit(self):
         """User should be able to edit name and img url"""
@@ -155,6 +159,11 @@ class UserViewTestCase(TestCase):
             self.assertIn(edited_first_name, html)
             self.assertIn(edited_last_name, html)
             self.assertIn(edited_img_url, html)
+
+
+            resp = c.post("/users/99999999999/edit")
+            self.assertEqual(resp.status_code, 404)
+
 
     def test_submit_new_user(self):
         """Should be able to create user and redirect to user listings
@@ -200,5 +209,3 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Invalid first name.', html)
             self.assertIn('Invalid last name.', html)
-
-        # TODO: add test for verifying that going to nonexistant user goes to 404
