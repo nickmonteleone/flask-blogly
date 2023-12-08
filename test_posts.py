@@ -74,7 +74,7 @@ class PostsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: new-post-form.html', html)
+            self.assertIn('<!-- Test: new-form.html', html)
 
     def test_submit_new_post_form(self):
         '''Should create post upon form submit'''
@@ -90,7 +90,7 @@ class PostsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('<!-- Test: user-detail.html', html)
+        self.assertIn('<!-- Test: detail.html', html)
 
         self.assertIn(self.new_post_title, html)
 
@@ -102,7 +102,7 @@ class PostsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: post-detail.html', html)
+            self.assertIn('<!-- Test: detail.html', html)
 
             self.assertIn(self.test_post_title, html)
             self.assertIn(self.test_post_content, html)
@@ -120,7 +120,7 @@ class PostsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: edit-post.html', html)
+            self.assertIn('<!-- Test: edit-form.html', html)
 
             self.assertIn(self.test_post_title, html)
             self.assertIn(self.test_post_content, html)
@@ -132,6 +132,7 @@ class PostsTestCase(TestCase):
         '''Should create post upon form submit'''
 
         edited_title = 'test new title for edit'
+        # TODO: change test data to edited-title, edited-content, etc
         edited_content = 'afsdhfalsudryaweiouryhhkasf'
 
         with app.test_client() as c:
@@ -145,7 +146,7 @@ class PostsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: post-detail.html', html)
+            self.assertIn('<!-- Test: detail.html', html)
 
             self.assertIn(edited_title, html)
             self.assertIn(edited_content, html)
@@ -165,10 +166,27 @@ class PostsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: user-detail.html', html)
+            self.assertIn('<!-- Test: detail.html', html)
 
             self.assertNotIn(self.test_post_title, html)
 
             resp = c.post("/posts/9999999999/delete")
             self.assertEqual(resp.status_code, 404)
 
+    def test_delete_user_with_posts(self):
+        """Should be able to delete user who has posts"""
+
+        with app.test_client() as c:
+            resp = c.post(
+                f"/users/{self.user_id}/delete",
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('<!-- Test: listing.html', html)
+
+            self.assertNotIn(self.user_first_name, html)
+            self.assertNotIn(self.user_last_name, html)
+
+            resp = c.post("/users/9999999999/delete")
+            self.assertEqual(resp.status_code, 404)

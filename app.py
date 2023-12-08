@@ -36,7 +36,7 @@ def show_all_users():
 
     users = User.query.all()
     return render_template(
-        '/user/user-listing.html',
+        '/user/listing.html',
         users=users
     )
 
@@ -45,7 +45,7 @@ def show_new_user_form():
     """Show an add form for users"""
 
     return render_template(
-        '/user/new-user-form.html'
+        '/user/new-form.html'
     )
 
 @app.post("/users/new")
@@ -83,7 +83,7 @@ def show_user_id_information(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    return render_template('/user/user-detail.html', user=user)
+    return render_template('/user/detail.html', user=user)
     # TODO: in files, have user files starts w/ "user"
 
 
@@ -93,7 +93,7 @@ def show_edit_user_form(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    return render_template('/user/edit-user.html', user=user)
+    return render_template('/user/edit-form.html', user=user)
 
 @app.post("/users/<int:user_id>/edit")
 def submit_edit_user_form(user_id):
@@ -129,6 +129,9 @@ def delete_user(user_id):
 
     user = User.query.get_or_404(user_id)
 
+    for post in user.posts:
+        db.session.delete(post)
+
     db.session.delete(user)
     db.session.commit()
 
@@ -147,7 +150,7 @@ def show_new_post_form(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template(
-        '/post/new-post-form.html',
+        '/post/new-form.html',
         user=user
     )
 
@@ -186,7 +189,7 @@ def show_post_page(post_id):
     post = Post.query.get_or_404(post_id)
 
     return render_template(
-        '/post/post-detail.html',
+        '/post/detail.html',
         post=post
     )
 
@@ -196,7 +199,7 @@ def show_edit_post_form(post_id):
 
     post = Post.query.get_or_404(post_id)
 
-    return render_template('/post/edit-post.html', post=post)
+    return render_template('/post/edit-form.html', post=post)
 
 
 @app.post('/posts/<int:post_id>/edit')

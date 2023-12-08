@@ -75,7 +75,7 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: user-listing.html', html)
+            self.assertIn('<!-- Test: listing.html', html)
 
             self.assertIn(self.user_1_first_name, html)
             self.assertIn(self.user_1_last_name, html)
@@ -88,7 +88,7 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: new-user-form.html', html)
+            self.assertIn('<!-- Test: new-form.html', html)
 
     def test_show_user_id_information(self):
         """Should show user details"""
@@ -99,7 +99,7 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: user-detail.html', html)
+            self.assertIn('<!-- Test: detail.html', html)
 
             self.assertIn(self.user_1_first_name, html)
             self.assertIn(self.user_1_last_name, html)
@@ -109,7 +109,7 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: user-detail.html', html)
+            self.assertIn('<!-- Test: detail.html', html)
 
             self.assertIn(self.user_2_first_name, html)
             self.assertIn(self.user_2_last_name, html)
@@ -128,7 +128,7 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: edit-user.html', html)
+            self.assertIn('<!-- Test: edit-form.html', html)
 
             self.assertIn(self.user_1_first_name, html)
             self.assertIn(self.user_1_last_name, html)
@@ -154,11 +154,13 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: user-detail.html', html)
+            self.assertIn('<!-- Test: detail.html', html)
 
             self.assertIn(edited_first_name, html)
             self.assertIn(edited_last_name, html)
             self.assertIn(edited_img_url, html)
+            # TODO: image in the wrong location (in placeholder)
+            # TODO: a src check is a good idea
 
 
             resp = c.post("/users/99999999999/edit")
@@ -186,7 +188,7 @@ class UsersTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<!-- Test: user-listing.html', html)
+            self.assertIn('<!-- Test: listing.html', html)
 
             self.assertIn(new_first_name, html)
             self.assertIn(new_last_name, html)
@@ -209,3 +211,21 @@ class UsersTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Invalid first name.', html)
             self.assertIn('Invalid last name.', html)
+
+    def test_delete_user_with_no_posts(self):
+        """Should be able to delete user who has posts"""
+
+        with app.test_client() as c:
+            resp = c.post(
+                f"/users/{self.user_1_id}/delete",
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('<!-- Test: listing.html', html)
+
+            self.assertNotIn(self.user_1_first_name, html)
+            self.assertNotIn(self.user_1_last_name, html)
+
+            resp = c.post("/users/9999999999/delete")
+            self.assertEqual(resp.status_code, 404)
