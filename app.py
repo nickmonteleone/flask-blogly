@@ -84,6 +84,8 @@ def show_user_id_information(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('/user/user-detail.html', user=user)
+    # TODO: in files, have user files starts w/ "user"
+
 
 @app.get("/users/<int:user_id>/edit")
 def show_edit_user_form(user_id):
@@ -111,6 +113,7 @@ def submit_edit_user_form(user_id):
     if len(user.last_name.strip()) == 0:
         flash(f"Invalid last name.")
         input_check = False
+    # TODO: validation method can be in model instead, not route
 
     if input_check:
         db.session.add(user)
@@ -167,6 +170,7 @@ def submit_new_post_form(user_id):
     if len(new_post.content.strip()) == 0:
         flash(f"Invalid content for post addition.")
         input_check = False
+    # TODO: move validation elsewhere
 
     if input_check:
         db.session.add(new_post)
